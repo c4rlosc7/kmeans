@@ -1,5 +1,4 @@
 #include <iostream>
-//#include <conio.h>
 using namespace std;
 int main()
 {
@@ -13,7 +12,6 @@ int main()
     for(i1=0;i1<10;i1++){
         cin >> k0[i1];
     }
-    //for(int i=0;i<10;i++){cout << k0[i] << " ";}
     //initial means
     int m1;
     int m2;
@@ -57,8 +55,8 @@ int main()
         }
     }
     t2=0;
-    //cout << "i2: " << i2 << " " << "i3: " << i3 << endl;
-//calculating new mean 3 7
+
+//calculating new mean
     for(t1 = 0; t1 < i2; t1++){
         t2 = t2 + k1[t1];
     }
@@ -89,39 +87,3 @@ int main()
     }while(m1!=om1&&m2!=om2);
     cout << "\n Clusters created";
 }
-
-/* OUTPUT
- Enter 10 numbers:
-2 4 10 12 3 20 30 11 25 23
-
- Enter initial mean 1:2
-
- Enter initial mean 2:16
-
-Cluster 1:2 4 3
-m1=3
-Cluster 2:10 12 20 30 11 25 23
-m2=18
- ----
-Cluster 1:2 4 10 3
-m1=4
-Cluster 2:12 20 30 11 25 23
-m2=20
- ----
-Cluster 1:2 4 10 3 11
-m1=6
-Cluster 2:12 20 30 25 23
-m2=22
- ----
-Cluster 1:2 4 10 12 3 11
-m1=7
-Cluster 2:20 30 25 23
-m2=24
- ----
-Cluster 1:2 4 10 12 3 11
-m1=7
-Cluster 2:20 30 25 23
-m2=24
- ----
- Clusters created
-*/
