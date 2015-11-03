@@ -66,7 +66,7 @@ using namespace std;
 	void show(vector<Punto> vc )
 	{
 	  for(int i=0; i < vc.size(); i++){
-	  cout << vc[i].x << vc[i].y << " ";
+	  cout <<"("<<vc[i].x<<","<< vc[i].y<<")"<< " ";
 	  }
 	}
 
@@ -96,24 +96,14 @@ int main(int argc, char **argv)
            ++num; // go to the next number
         }
     infile.close();
+
 		num = num -2;
 		srand(time(NULL));
-		cout << "----Centros----"<< endl;
-		for (int i = 0; i <= k; i++){
+		cout << "\n";
+		for (int i = 0; i < k; i++){
 			centros[i].x = 1 + rand() % 6;
 			centros[i].y = 1 + rand() % 6;
-			cout << "Centro["<<i<<"] "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
-		}
-		cout << "----Puntos----"<< endl;
-		for (int i = 0; i <= num; i++){
-			cout << "Punto["<<i<<"] "<<"("<<puntos[i].x<<","<<puntos[i].y<<")"<<endl;
-		}
-
-		for(int dk=0; dk < k; dk++){
-			for(int dc1=0; dc1 <= num; dc1++){
-					cout<<"Distancia M"<<dk<<"-P"<<dc1<<": ";
-					cout<<sqrt( (pow((puntos[dc1].x-centros[dk].x),2)) + (pow((puntos[dc1].y-centros[dk].y),2)))<<endl;
-			}
+			cout << "Centro Iniciales["<<i<<"]: "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
 		}
 
 		int row[k];
@@ -133,7 +123,7 @@ int main(int argc, char **argv)
 				for(int j=0; j < k; j++){
 					//row[j] = abs(cluster[j] - objects[i]); // distance cluster - points
 					row[j] = sqrt( (pow((puntos[i].x-centros[j].x),2)) + (pow((puntos[i].y-centros[j].y),2)));
-					cout <<"P"<<i<<" M"<<j<<": "<<row[j]<<endl;
+					//cout <<"P"<<i<<" M"<<j<<": "<<row[j]<<endl;
 				}
 				groups[indexOf(min(row,k),row,k)].push_back(puntos[i]);// min,array,maxIndex
 			}
@@ -145,7 +135,7 @@ int main(int argc, char **argv)
 					cviejos[j] = centros[j];
 					centros[j].x = meanx(groups[j]);
 					centros[j].y = meany(groups[j]);
-					cout << " nuevo centro " << centros[j].x <<" "<< centros[j].y<<endl;
+					//cout << " nuevo centro " << centros[j].x <<" "<< centros[j].y<<endl;
 				}
 			}
 
@@ -155,20 +145,21 @@ int main(int argc, char **argv)
 				groups[i].clear();
 			}
 			iter++;
+
 		}while(!isEqual(cviejos,centros,k));
 
 		cout<<"\n";
 		for(int i=0; i < k; i++)
 		{
-			cout<< "C" <<(i+1)<< " : "<<centros[i].x << centros[i].y<<endl;
+			cout<< "CF" <<(i+1)<< " : "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
 		}
 		for(int i=0; i < k; i++)
 		{
-			cout << "\nGroup " << (i+1) << " : ";
+			cout << "\nGrupo " << (i+1) << " : ";
 			show(groups[i]);
 		}
 	  cout << "\n";
-		cout << "\nNumber of Iterations " << iter <<endl;
+		cout << "\nNumero de Iteraciones " << iter <<endl;
 
 		return 0;
 }
