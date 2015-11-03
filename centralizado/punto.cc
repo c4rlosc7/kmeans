@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 
 		ifstream infile;
     int num = 0; // num must start at 0
-    infile.open("databook.txt");// file containing numbers in 3 columns
+    infile.open("facebook.txt");// file containing numbers in 3 columns
          while(!infile.eof()) // reads file to end of *file*, not line
         {
            infile >> puntos[num].x ; // read first column number
@@ -104,8 +104,8 @@ int main(int argc, char **argv)
 		srand(time(NULL));
 		cout << "\n";
 		for (int i = 0; i < k; i++){
-			centros[i].x = 1 + rand() % 88233;
-			centros[i].y = 1 + rand() % 88233;
+			centros[i].x = 1 + rand() % 4038;
+			centros[i].y = 1 + rand() % 4038;
 			cout << "Centro Iniciales["<<i<<"]: "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
 		}
 
