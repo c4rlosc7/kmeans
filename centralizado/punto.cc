@@ -104,8 +104,8 @@ int main(int argc, char **argv)
 		srand(time(NULL));
 		cout << "\n";
 		for (int i = 0; i < k; i++){
-			centros[i].x = 1 + rand() % 6;
-			centros[i].y = 1 + rand() % 6;
+			centros[i].x = 1 + rand() % 88233;
+			centros[i].y = 1 + rand() % 88233;
 			cout << "Centro Iniciales["<<i<<"]: "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
 		}
 
