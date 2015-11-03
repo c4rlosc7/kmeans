@@ -14,7 +14,7 @@ using namespace std;
 	struct Punto
 	{
 		int x,y;
-	}puntos[7];
+	}puntos[88233];
 
 	void pintar(const Punto p){
 		cout << "P( " << p.x <<" , "<< p.y<<" )" <<endl;
@@ -65,9 +65,11 @@ using namespace std;
 
 	void show(vector<Punto> vc )
 	{
-	  for(int i=0; i < vc.size(); i++){
-	  cout <<"("<<vc[i].x<<","<< vc[i].y<<")"<< " ";
+		int i=0;
+	  for(i=0; i < vc.size(); i++){
+	  //cout <<"("<<vc[i].x<<","<< vc[i].y<<")"<< " ";
 	  }
+		cout << i <<endl;
 	}
 
 	bool isEqual(Punto arr1[], Punto arr2[], int maxIndex){
@@ -83,7 +85,8 @@ int main(int argc, char **argv)
 {
 		string ink = argv[1];
 	  int k = std::stoi (ink); // input k
-		int noOfItems=7;
+		int noOfItems=88233;
+		//int noOfItems=7;
 		Punto centros[k], cviejos[k];
 
 		ifstream infile;
