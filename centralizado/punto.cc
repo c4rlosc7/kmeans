@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <cstdlib>
-
 #include <array>
 #include <time.h>
 #include <iostream>
@@ -100,17 +99,11 @@ int main(int argc, char **argv)
 		num = num -2;
 		srand(time(NULL));
 		cout << "----Centros----"<< endl;
-		//for (int i = 0; i <= k; i++){
-			//centros[i].x = 1 + rand() % 6;
-			//centros[i].y = 1 + rand() % 6;
-			centros[0].x = 1;
-			centros[0].y = 1;
-			centros[1].x = 2;
-			centros[1].y = 1;
-			cout << "Centro[0]"<<centros[0].x<<","<<centros[0].y<<endl;
-			cout << "Centro[1]"<<centros[1].x<<","<<centros[1].y<<endl;
-			//cout << "Centro["<<i<<"] "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
-		//}
+		for (int i = 0; i <= k; i++){
+			centros[i].x = 1 + rand() % 6;
+			centros[i].y = 1 + rand() % 6;
+			cout << "Centro["<<i<<"] "<<"("<<centros[i].x<<","<<centros[i].y<<")"<<endl;
+		}
 		cout << "----Puntos----"<< endl;
 		for (int i = 0; i <= num; i++){
 			cout << "Punto["<<i<<"] "<<"("<<puntos[i].x<<","<<puntos[i].y<<")"<<endl;
