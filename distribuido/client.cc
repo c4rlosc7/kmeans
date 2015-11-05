@@ -15,13 +15,13 @@ struct Punto // struct Punto with x,y as input
 }puntos[88233];
 /*__________________________________________________________________*/
 
-int main(int argc, char **argv){
+int main(int argc, char **argv){                     // .client 192.168.1.12 k
   string ip; 		// 10.253.96.236 U, 192.168.1.12 CASA
   ip = argv[1];
+  cout<<"running client, connect at ip " << ip << endl;
 
-  cout<<"running client with ip: " << ip << endl;
-	string ink = argv[2];
-	int k = std::stoi (ink);
+	//string ink = argv[2];
+	//int k = std::stoi (ink);
 /*__________________________________________________________________*/
 	ifstream infile;
 	int num = 0; // num must start at 0
@@ -34,34 +34,59 @@ int main(int argc, char **argv){
 			}
 	infile.close();
 /*__________________________________________________________________*/
-  context ctx;
-  socket cb(ctx, socket_type::xreq); // socket cliente-broker 5555
-  cb.connect("tcp://"+ip+":5555");
+	// sc -> rc
+	int count=0;
 
-  socket sc(ctx, socket_type::xrep); // socket servidor-cliente 5559
-  sc.bind("tcp://*:6666");
+	context ctx;
+  socket rc(ctx, socket_type::xrep); // socket recollector to client
+  rc.bind("tcp://*:6666");
 
   string ipc = "192.168.1.12";
-  message m;                 // mensaje m
+  message cworkers;                 // mensaje cworkers
+	//int d=0;
+	int k=0;
+	while(true)
+	{
+		cout <<"Enter number cluster ";
+		cin >> k;
+		cworkers << k;
+		cworkers << ipc;
 
-	//while(true)
-	//{
-		//cout << "\n1.PlayList  2.Play : ";
-		//cin >> c;
-		m << k;
-		m << ipc;
-		cb.send(m);
+		//Round Robin All connect
+		if (count == 0){
+			socket wx(ctx, socket_type::xreq);  // socket (1) servidor-cliente  5559 5560 5561
+			wx.connect("tcp://"+ip+":5557");
+			cout << "running worker #1\n";
+			wx.send(cworkers);
+			count = count + 1;
+			//d++;
+		}else if (count == 1){
+			socket wx(ctx, socket_type::xreq);  // socket (2) servidor-cliente  5559 5560 5561
+			wx.connect("tcp://"+ip+":5558");
+			cout << "running worker #2\n";
+			wx.send(cworkers);
+			count = count + 1;
+			//d++;
+		}else if (count == 2){
+			socket wx(ctx, socket_type::xreq);  // socket (3) servidor-cliente  5559 5560 5561
+			wx.connect("tcp://"+ip+":5559");
+			cout << "running worker #3\n";
+			wx.send(cworkers);
+			count=0;
+			//d++;
+		}
 
-	  message bserver;
-	  sc.receive(bserver);
-	  string idb, ids;
-	  bserver >> idb >> ids;
+		message rclient;
+	  rc.receive(rclient);
+	  string idr, idc;
+	  rclient >> idr >> idc;
 	  //cout << "canciones encontradas: " << bserver.parts()-3 <<endl;
-	  //for(size_t ii = 0; ii < bserver.parts(); ii++) {
-	  //  cout << "name song["<< ii-3 << "]: "<< bserver.get(ii) << endl;
-	  //}
-	  int tarea;
-	  bserver >> tarea;
+	  for(size_t ii = 0; ii < rclient.parts(); ii++)
+	    cout << "message["<<ii<< "] "<< rclient.get(ii) <<endl;
+
+	  //int l=rclient.parts();
+		int tarea;
+	  rclient >> tarea;
 		cout << "Cluster: " <<tarea<<endl;
 	  //if(tarea == 1){cout <<"Es uno";
 	  	//cout << "Canciones encontradas: " << bserver.parts()-3<< endl;
@@ -70,6 +95,6 @@ int main(int argc, char **argv){
 			//}
 
 	  //}else if(tarea == 2){ cout << "Es dos"; }
-	//}
+	}
   return 0;
 }

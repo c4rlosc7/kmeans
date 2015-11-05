@@ -7,61 +7,41 @@
 using namespace std;
 using namespace zmqpp;
 
-int main(int argc, char **argv)
+int main(int argc, char **argv)  // ./workers 192.168.1.12 5557 o 5558 o 5559
 {
-		string ip;
+		string ip, port;
   	ip = argv[1];
-  	cout<<"Running broker with ip: " << ip <<endl;
+		port = argv[2];
+  	cout<<"Running worker, connect at recollector " <<ip<<" port "<<port<<endl;
 
-  	context ctx;
-  	socket cb(ctx, socket_type::xrep);  // socket cliente-broker
-  	cb.bind("tcp://*:5555");
+		context ctx;
+		socket wr(ctx, socket_type::xreq);
+		wr.connect("tcp://"+ip+":6667");
 
-  	int count=0;
-  	message cbroker;
+	  socket wx(ctx, socket_type::xrep);         // socket client-workers 5557 5558 5559
+	  wx.bind("tcp://*:"+port);
+
+		message cworkers;
   	string idc,ipc;
-  	int c;
+  	int k;
   	while(true)
   	{
 			//message cbroker;                  // recibe del cliente
-			cb.receive(cbroker);
-			cbroker >> idc >> c;
-			cout << c <<endl;
-			if (c <= 2 && c > 0){
-				cout << "recibe" << cbroker.parts() << "partes" << endl;
-				message bserver;               // envia al servidor
-				bserver << idc << c;
-				//if (c == 2){int index; cbroker >> index; bserver << index;} //play index song
-				cbroker >> ipc;
-				for(size_t i = 0; i < cbroker.parts(); i++) //mensaje recibido
-					cout << i << cbroker.get(i) << endl;
+			wx.receive(cworkers);
+			cworkers >> idc >> k >> ipc;
+			cout << "recibe" << cworkers.parts() << "partes" << endl;
 
-				bserver << ipc;
-				cout << "envio" << bserver.parts() << "partes" << endl;
-				for(size_t ii = 0; ii < bserver.parts(); ii++)
-					cout << ii << bserver.get(ii) << endl;
-
-				//Round Robin
-				if (count == 0){
-					socket sx(ctx, socket_type::xreq);  // socket (1) servidor-cliente  5559 5560 5561
-					sx.connect("tcp://"+ip+":5557");
-					cout << "running server #1\n";
-					sx.send(bserver);
-					count = count + 1;
-				}else if (count == 1){
-					socket sx(ctx, socket_type::xreq);  // socket (2) servidor-cliente  5559 5560 5561
-					sx.connect("tcp://"+ip+":5558");
-					cout << "running server #2\n";
-					sx.send(bserver);
-					count = count + 1;
-				}else if (count == 2){
-					socket sx(ctx, socket_type::xreq);  // socket (3) servidor-cliente  5559 5560 5561
-					sx.connect("tcp://"+ip+":5559");
-					cout << "running server #3\n";
-					sx.send(bserver);
-					count=0;
-				}
-			}
+			message wrecollector;               // envia al recolector
+			wrecollector << idc << k << ipc;
+			//cworkers >> ipc;
+			//for(size_t i = 0; i < cworkers.parts(); i++) //mensaje recibido
+			//	cout << i << cworkers.get(i) << endl;
+			cout << "idcliente " <<idc<<" cluster "<<k<<" ipcliente "<<ipc<<endl;
+			//wrecollector << ipc;
+			cout << "envio" << wrecollector.parts() << "partes" << endl;
+			//for(size_t ii = 0; ii < wrecollector.parts(); ii++)
+			//	cout << ii << wrecollector.get(ii) << endl;
+			wr.send(wrecollector);
   	}
 	return 0;
 }
