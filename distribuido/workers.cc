@@ -8,13 +8,13 @@
 using namespace std;
 using namespace zmqpp;
 
-/*__________________________________________________________________*/
-struct Punto // struct Punto with x,y as input
+/*_______________________struct Punto with x,y as input_______________________*/
+struct Punto
 {
 	int x,y;
 };
-/*__________________________________________________________________*/
-Punto centroid(int k){
+/*_______________________assignmentCentroid Random____________________________*/
+Punto assignmentCentroid(int k){
 	srand(time(NULL));
 	Punto centrosi[k];
 	for (int i = 0; i < k; i++){  // random centros initials
@@ -24,8 +24,8 @@ Punto centroid(int k){
 	}
 	return centrosi[k];
 }
-/*__________________________________________________________________*/
-Punto grafo(int l){
+/*_______________________Load graph to file___________________________________*/
+Punto loadGraph(int l){
 	Punto graph[l];
 	ifstream infile;
 	int num = 0; // num must start at 0
@@ -39,7 +39,17 @@ Punto grafo(int l){
 	infile.close();
 	return graph[l];
 }
-/*__________________________________________________________________*/
+/*_______________________Create clusters group________________________________*/
+vector < vector <Punto> > groupClusters(int k){
+	vector < vector<Punto> > groupsClusters;
+	for(int i=0; i < k; i++) // K groups empty to groups
+	{
+		vector<Punto> newGroup;
+		groupsClusters.push_back(newGroup);
+	}
+	return groupsClusters;
+}
+/*____________________________________________________________________________*/
 
 int main(int argc, char **argv)  // ./workers 192.168.1.12 5557 o 5558 o 5559
 {
@@ -47,15 +57,17 @@ int main(int argc, char **argv)  // ./workers 192.168.1.12 5557 o 5558 o 5559
   	ip = argv[1];
 		port = argv[2];
 		Punto puntos[7];
+		vector < vector<Punto> > groups;
   	cout<<"Running worker, connect at recollector " <<ip<<" port "<<port<<endl;
 		/*__________________________________________________________________*/
-		puntos[7] = grafo(7);
+		puntos[7] = loadGraph(7);
 		/*__________________________________________________________________*/
 		context ctx;
 		socket wr(ctx, socket_type::xreq);
 		wr.connect("tcp://"+ip+":6667");
 	  socket wx(ctx, socket_type::xrep);         // socket client-workers 5557 5558 5559
 	  wx.bind("tcp://*:"+port);
+
 		message cworkers;
   	string idc,ipc;
   	int k;
@@ -65,7 +77,9 @@ int main(int argc, char **argv)  // ./workers 192.168.1.12 5557 o 5558 o 5559
 			cworkers >> idc >> k >> ipc;
 			/*__________________________________________________________________*/
 			Punto centros[k];
-			centros[k] = centroid(k);
+			centros[k] = assignmentCentroid(k);
+			/*__________________________________________________________________*/
+			groups = groupClusters(k);
 			/*__________________________________________________________________*/
 			cout << "recibe" << cworkers.parts() << "partes" << endl;
 			message wrecollector;               // envia al recolector
