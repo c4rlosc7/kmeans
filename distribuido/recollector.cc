@@ -22,7 +22,6 @@ int main()
 			message wrecollector;
 			wr.receive(wrecollector);
 			cout << "recibe" << wrecollector.parts() << "partes" << endl;
-			//longitud_msg = wrecollector.parts();
 			for(size_t i = 0; i < wrecollector.parts(); i++) {
 				cout << wrecollector.get(i) << endl;
 			}

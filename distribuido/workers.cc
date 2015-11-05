@@ -26,21 +26,13 @@ int main(int argc, char **argv)  // ./workers 192.168.1.12 5557 o 5558 o 5559
   	int k;
   	while(true)
   	{
-			//message cbroker;                  // recibe del cliente
-			wx.receive(cworkers);
+			wx.receive(cworkers);                  // recibe del cliente
 			cworkers >> idc >> k >> ipc;
 			cout << "recibe" << cworkers.parts() << "partes" << endl;
-
 			message wrecollector;               // envia al recolector
 			wrecollector << idc << k << ipc;
-			//cworkers >> ipc;
-			//for(size_t i = 0; i < cworkers.parts(); i++) //mensaje recibido
-			//	cout << i << cworkers.get(i) << endl;
 			cout << "idcliente " <<idc<<" cluster "<<k<<" ipcliente "<<ipc<<endl;
-			//wrecollector << ipc;
 			cout << "envio" << wrecollector.parts() << "partes" << endl;
-			//for(size_t ii = 0; ii < wrecollector.parts(); ii++)
-			//	cout << ii << wrecollector.get(ii) << endl;
 			wr.send(wrecollector);
   	}
 	return 0;
