@@ -8,31 +8,13 @@
 
 using namespace std;
 using namespace zmqpp;
-/*__________________________________________________________________*/
-struct Punto // struct Punto with x,y as input
-{
-	int x,y;
-}puntos[7];
-/*__________________________________________________________________*/
 
 int main(int argc, char **argv){                     // .client 192.168.1.12 k
   string ip; 		// 10.253.96.236 U, 192.168.1.12 CASA
   ip = argv[1];
   cout<<"running client, connect at ip " << ip << endl;
-
 	string ink = argv[2];
 	int k = std::stoi (ink);
-/*__________________________________________________________________*/
-	ifstream infile;
-	int num = 0; // num must start at 0
-	infile.open("databook.txt");// file containing numbers in 2 columns
-			 while(!infile.eof()) // reads file to end of *file*, not line
-			{
-				 infile >> puntos[num].x ; // read first column number
-				 infile >> puntos[num].y; // read second column number
-				 ++num; // go to the next number
-			}
-	infile.close();
 /*__________________________________________________________________*/
 	int count=0;
 	context ctx;
