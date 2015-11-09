@@ -83,13 +83,13 @@ using namespace std;
 		}
 		return true;
 	}
-/*____________________________________________________________________________*/
-	int * loadX(int nums1[], int k){
+	/*____________________________________________________________________________*/
+	int * loadX(int nums1[], int k, string filename){
 		int nums2[k];
 		ifstream infile;
 		int num = 0; // num must start at 0
-		infile.open("databook.txt");// file containing numbers in 3 columns
-				 while(num <= 7) // reads file to end of *file*, not line
+		infile.open(filename);// file containing numbers in 3 columns
+				 while(num <= k) // reads file to end of *file*, not line
 				{
 					 infile >> nums1[num]; // read first column number
 					 infile >> nums2[num]; // read second column number
@@ -99,13 +99,13 @@ using namespace std;
 		infile.close();
 		return nums1;
 	}
-/*____________________________________________________________________________*/
-	int * loadY(int nums2[], int k){
+	/*____________________________________________________________________________*/
+	int * loadY(int nums2[], int k, string filename){
 		int nums1[k];
 		ifstream infile;
 		int num = 0; // num must start at 0
-		infile.open("databook.txt");// file containing numbers in 3 columns
-				 while(num <= 7) // reads file to end of *file*, not line
+		infile.open(filename);// file containing numbers in 3 columns
+				 while(num <= k) // reads file to end of *file*, not line
 				{
 					 infile >> nums1[num]; // read first column number
 					 infile >> nums2[num]; // read second column number
@@ -115,24 +115,24 @@ using namespace std;
 		infile.close();
 		return nums2;
 	}
-/*____________________________________________________________________________*/
+	/*____________________________________________________________________________*/
 	void show(int x[], int y[], int k){
 		for (int i=0; i<=k; i++){
 			cout << "dato ( "<<x[i]<< " , "<<y[i]<<" )"<<endl;
 		}
 	}
-/*____________________________________________________________________________*/
+	/*____________________________________________________________________________*/
 	int higher(int arr[], int maxIndex) //higher number of array
 	{
 		int higher = 0;
-		for(int i=0; i < maxIndex; i++)
+		for(int i=0; i <= maxIndex; i++)
 		{
 			if(arr[i] > higher)
 			higher = arr[i];
 		}
 		return higher;
 	}
-/*____________________________________________________________________________*/
+	/*____________________________________________________________________________*/
 int main(int argc, char **argv)
 {
 		string ink = argv[1];
@@ -143,40 +143,47 @@ int main(int argc, char **argv)
 		float bcv;
 		vector < vector<Punto> > groups;
 /*____________________________________________________________________________*/
-	int *arrayDatosX;                            // then where you want to use it.
-	int *arrayDatosY;
-	int columnX[k];
-	int columnY[k];
-	arrayDatosX = loadX(columnX,k);
-	arrayDatosY = loadY(columnY,k);
-	show(arrayDatosX, arrayDatosY, k);
-	int higherX, higherY;
-	higherX = higher(arrayDatosX, k);
-	higherY = higher(arrayDatosY, k);
-	/*____________________________________________________________________________*/
-	int m=higherX;
-	int n=higherY;
-	int c, d, v, matrix[m][n];
-	int *matriz;
+int *arrayDatosX;                            // then where you want to use it.
+int *arrayDatosY;
+int columnX[k], columnY[k];
+arrayDatosX = loadX(columnX, k, filename);
+arrayDatosY = loadY(columnY, k, filename);
+//show(arrayDatosX, arrayDatosY, k);
+int higherX, higherY;
+higherX = higher(arrayDatosX, k);
+higherY = higher(arrayDatosY, k);
+/*____________________________________________________________________________*/
+int m=higherX;
+int n=higherY;
+cout << "matriz of "<<m<< " X "<<n<<endl;
 
-	for (  c = 0 ; c <= m ; c++ )  // m = 5 row
-		 for ( d = 0 ; d <= n ; d++ ) // n = 3 column
-				matrix[c][d]=0;
+int c, d, v, matrix[m][n];
+int cc=1;
+int *matriz;
 
-	for (  c = 0 ; c <= m ; c++ )  // m = 5 row
-		 for ( d = 0 ; d <= n ; d++ ) // n = 3 column
-				for ( v = 0; v < k; v++){
-					if(arrayDatosX[v] == c){
-							matrix[c][arrayDatosY[v]]=1;
-					}
-				}
+for (  c = 0 ; c < m ; c++ )  // m = row
+	 for ( d = 0 ; d < n ; d++ ) // n = column
+			matrix[c][d]=0;
 
-	for (int jj=1; jj<=m; jj++){ // 5 row
-		for (int ii=1; ii<=n; ii++) // 3 column
-			cout << matrix[jj][ii] <<" ";
-		cout <<" "<<endl;
+for (  c = 0 ; c < m ; c++ ){ // m = row
+	for ( d = 0 ; d < n ; d++ ){ // n = column
+		for ( v = 0; v <= k; v++){
+			if(arrayDatosX[v] == cc){
+				//cout << "  "<<arrayDatosX[v]<< "  "<<arrayDatosY[v]<<endl;
+				matrix[c][arrayDatosY[v]-1]=1;
+			}
+		}
 	}
+	cc++;
+}
+
+
+for (int jj=0; jj<m; jj++){ // 5 row
+	for (int ii=0; ii<n; ii++) // 3 column
+		cout << matrix[jj][ii] <<" ";
 	cout <<" "<<endl;
+}
+cout <<" "<<endl;
 /*____________________________________________________________________________*/
 		//num = num -2;
 		srand(time(NULL));
