@@ -11,17 +11,10 @@
 #include <cmath>
 
 using namespace std;
-
 	struct Punto // struct Punto with x,y as input
 	{
 		int x,y;
 	}puntos[88233];
-
-	int distance(int px, int py, int cx, int cy){
-		int distance=0;
-		distance=sqrt((pow((px-cx),2)) + (pow((py-cy),2)));
-		return distance;
-	}
 
 	int minimum(int arr[], int maxIndex) //minimum between k distance
 	{
@@ -78,61 +71,12 @@ using namespace std;
 	bool isEqual(Punto arr1[], Punto arr2[], int maxIndex){ // oldcluster cluster k
 		for(int i=0; i < maxIndex; i++)
 		{
-			if( (arr1[i].x != arr2[i].x) || (arr1[i].y != arr2[i].y) )
+			if( (arr1[i].x != arr2[i].x) && (arr1[i].y != arr2[i].y) )
 			return false;
 		}
 		return true;
 	}
-	/*____________________________________________________________________________*/
-	int * loadX(int nums1[], int k, string filename){
-		int nums2[k];
-		ifstream infile;
-		int num = 0; // num must start at 0
-		infile.open(filename);// file containing numbers in 3 columns
-				 while(num <= k) // reads file to end of *file*, not line
-				{
-					 infile >> nums1[num]; // read first column number
-					 infile >> nums2[num]; // read second column number
-					 //cout <<"P("<<nums1[num]<<","<<nums2[num]<< ")"<<endl;
-					 ++num; // go to the next number
-				}
-		infile.close();
-		return nums1;
-	}
-	/*____________________________________________________________________________*/
-	int * loadY(int nums2[], int k, string filename){
-		int nums1[k];
-		ifstream infile;
-		int num = 0; // num must start at 0
-		infile.open(filename);// file containing numbers in 3 columns
-				 while(num <= k) // reads file to end of *file*, not line
-				{
-					 infile >> nums1[num]; // read first column number
-					 infile >> nums2[num]; // read second column number
-					 //cout <<"P("<<nums1[num]<<","<<nums2[num]<< ")"<<endl;
-					 ++num; // go to the next number
-				}
-		infile.close();
-		return nums2;
-	}
-	/*____________________________________________________________________________*/
-	void show(int x[], int y[], int k){
-		for (int i=0; i<=k; i++){
-			cout << "dato ( "<<x[i]<< " , "<<y[i]<<" )"<<endl;
-		}
-	}
-	/*____________________________________________________________________________*/
-	int higher(int arr[], int maxIndex) //higher number of array
-	{
-		int higher = 0;
-		for(int i=0; i <= maxIndex; i++)
-		{
-			if(arr[i] > higher)
-			higher = arr[i];
-		}
-		return higher;
-	}
-	/*____________________________________________________________________________*/
+
 int main(int argc, char **argv)
 {
 		string ink = argv[1];
@@ -140,52 +84,20 @@ int main(int argc, char **argv)
 		int noOfItems=88233;
 		Punto centros[k], cviejos[k];
 		int row[k];
-		float bcv;
 		vector < vector<Punto> > groups;
-/*____________________________________________________________________________*/
-int *arrayDatosX;                            // then where you want to use it.
-int *arrayDatosY;
-int columnX[k], columnY[k];
-arrayDatosX = loadX(columnX, k, filename);
-arrayDatosY = loadY(columnY, k, filename);
-//show(arrayDatosX, arrayDatosY, k);
-int higherX, higherY;
-higherX = higher(arrayDatosX, k);
-higherY = higher(arrayDatosY, k);
-/*____________________________________________________________________________*/
-int m=higherX;
-int n=higherY;
-cout << "matriz of "<<m<< " X "<<n<<endl;
 
-int c, d, v, matrix[m][n];
-int cc=1;
-int *matriz;
+		ifstream infile;
+    int num = 0; // num must start at 0
+    infile.open("facebook.txt");// file containing numbers in 2 columns
+         while(!infile.eof()) // reads file to end of *file*, not line
+        {
+           infile >> puntos[num].x ; // read first column number
+           infile >> puntos[num].y; // read second column number
+           ++num; // go to the next number
+        }
+    infile.close();
 
-for (  c = 0 ; c < m ; c++ )  // m = row
-	 for ( d = 0 ; d < n ; d++ ) // n = column
-			matrix[c][d]=0;
-
-for (  c = 0 ; c < m ; c++ ){ // m = row
-	for ( d = 0 ; d < n ; d++ ){ // n = column
-		for ( v = 0; v <= k; v++){
-			if(arrayDatosX[v] == cc){
-				//cout << "  "<<arrayDatosX[v]<< "  "<<arrayDatosY[v]<<endl;
-				matrix[c][arrayDatosY[v]-1]=1;
-			}
-		}
-	}
-	cc++;
-}
-
-
-for (int jj=0; jj<m; jj++){ // 5 row
-	for (int ii=0; ii<n; ii++) // 3 column
-		cout << matrix[jj][ii] <<" ";
-	cout <<" "<<endl;
-}
-cout <<" "<<endl;
-/*____________________________________________________________________________*/
-		//num = num -2;
+		num = num -2;
 		srand(time(NULL));
 		cout << "\n";
 		for (int i = 0; i < k; i++){  // random centros initials
@@ -206,8 +118,7 @@ cout <<" "<<endl;
 			for(int i=0; i <= noOfItems; i++)  //noOfItems
 			{
 				for(int j=0; j < k; j++){ // distance cluster - points
-					//row[j] = sqrt( (pow((puntos[i].x-centros[j].x),2)) + (pow((puntos[i].y-centros[j].y),2)));
-					row[j] = distance(puntos[i].x, puntos[i].y, centros[j].x, centros[j].y);
+					row[j] = sqrt( (pow((puntos[i].x-centros[j].x),2)) + (pow((puntos[i].y-centros[j].y),2)));
 				}
 				groups[indexOf(minimum(row,k),row,k)].push_back(puntos[i]);// add puntos position groups
 			}
