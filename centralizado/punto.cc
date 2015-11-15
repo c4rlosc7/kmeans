@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h>      /* printf */
 #include <cstdlib>
 #include <array>
 #include <time.h>
@@ -14,10 +14,14 @@ using namespace std;
 /*_____________________struct Punto with x,y as input_________________________*/
 struct Punto {
   int x, y;
-} puntos[88233];
-/*________________________minimum of cluster__________________________________*/
-int minimum(int arr[], int maxIndex) {
-  int min = 10000000;
+} puntos[7];
+/*_____________________struct Centroid with x,y as input double _______________*/
+struct Centroid {
+  double x, y;
+};
+/*________________________minimum of cluster double__________________________________*/
+double minimum(double arr[], int maxIndex) {
+  double min = 10000000;
   for (int i = 0; i < maxIndex; i++) {
     if (arr[i] < min)
       min = arr[i];
@@ -25,7 +29,7 @@ int minimum(int arr[], int maxIndex) {
   return min;
 }
 /*_______________________position of minimum cluster__________________________*/
-int indexOf(int number, int arr[], int maxIndex) {
+int indexOf(double number, double arr[], int maxIndex) {
   int index;
   for (int i = 0; i < maxIndex; i++) {
     if (number == arr[i]) {
@@ -36,17 +40,16 @@ int indexOf(int number, int arr[], int maxIndex) {
   return index; // return position on cluster
 }
 /*______________________________average of x__________________________________*/
-int meanx(vector<Punto> vc) {
-  int sumx = 0;
+double meanx(vector<Punto> vc) {
+  double sumx = 0;
   for (int i = 0; i < vc.size(); i++) {
     sumx = sumx + vc[i].x;
   }
   return sumx / vc.size();
 }
-/*______________________________average of
- * y___________________________________*/
-int meany(vector<Punto> vc) {
-  int sumy = 0;
+/*______________________________average of y___________________________________*/
+double meany(vector<Punto> vc) {
+  double sumy = 0;
   for (int i = 0; i < vc.size(); i++) {
     sumy = sumy + vc[i].y;
   }
@@ -56,13 +59,12 @@ int meany(vector<Punto> vc) {
 void show(vector<Punto> vc) {
   int i = 0;
   for (i = 0; i < vc.size(); i++) {
-    // cout <<"("<<vc[i].x<<","<< vc[i].y<<")"<< " ";
+      //cout <<"("<<vc[i].x<<","<< vc[i].y<<")"<< " ";
   }
-  cout << i;
+  cout << "Puntos "<<i;
 }
-/*_______________________________Until is
- * equal_________________________________*/
-bool isEqual(Punto arr1[], Punto arr2[], int maxIndex) { // oldcluster cluster k
+/*______________________________Until is equal_________________________________*/
+bool isEqual(Centroid arr1[], Centroid arr2[], int maxIndex) { // oldcluster cluster k
   for (int i = 0; i < maxIndex; i++) {
     if ((arr1[i].x != arr2[i].x) && (arr1[i].y != arr2[i].y))
       return false;
@@ -73,15 +75,15 @@ bool isEqual(Punto arr1[], Punto arr2[], int maxIndex) { // oldcluster cluster k
 int main(int argc, char **argv) {
   string ink = argv[1];
   int k = std::stoi(ink);
-  int noOfItems = 88233;
-  Punto centros[k], cviejos[k];
-  int row[k];
+  int noOfItems = 7;
+  Centroid centros[k], cviejos[k];
+  double row[k];
   vector<vector<Punto>> groups;
   /*______________________________Load
    * Dataset____________________________________*/
   ifstream infile;
   int num = 0;                 // num must start at 0
-  infile.open("facebook.txt"); // file containing numbers in 2 columns
+  infile.open("databook.txt"); // file containing numbers in 2 columns
   while (!infile.eof())        // reads file to end of *file*, not line
   {
     infile >> puntos[num].x; // read first column number
@@ -91,31 +93,75 @@ int main(int argc, char **argv) {
   infile.close();
 
   num = num - 2;
+
   srand(time(NULL));
   cout << "\n";
   for (int i = 0; i < k; i++) { // random centros initials
-    centros[i].x = 1 + rand() % 4038;
-    centros[i].y = 1 + rand() % 4038;
+    centros[i].x = 1 + rand() % 5;
+    centros[i].y = 1 + rand() % 5;
     cout << "Centro Iniciales[" << i + 1 << "]: "
          << "(" << centros[i].x << "," << centros[i].y << ")" << endl;
   }
+/*
+centros[0].x = 1;
+centros[0].y = 1;
+centros[1].x = 2;
+centros[1].y = 1;
+
+cout << "Centro Iniciales[" << 1 << "]: "
+     << "(" << centros[0].x << "," << centros[0].y << ")" << endl;
+
+cout << "Centro Iniciales[" << 2 << "]: "
+      << "(" << centros[1].x << "," << centros[1].y << ")" << endl;
+*/
+
   /*____________________________________________________________________________*/
   for (int i = 0; i < k; i++) // K groups empty to groups
   {
     vector<Punto> newGroup;
     groups.push_back(newGroup);
   }
-  int iter = 1;
+  int iter = 0;
+  double oldDistance = 0.0;
+  double newDistance = 0.0;
+  double sse = 0.0;
+  double delta = 0.46;
+  double sse_aux = 0.0;
+  double flags;
+  double error;
   /*____________________________________________________________________________*/
   do {
+      //cout << "Iteration "<<iter<< endl;
+	   oldDistance = newDistance;
+
     for (int i = 0; i <= noOfItems; i++) {
       for (int j = 0; j < k; j++) { // distance cluster - points
-        row[j] = sqrt((pow((puntos[i].x - centros[j].x), 2)) +
+        double d = sqrt((pow((puntos[i].x - centros[j].x), 2)) +
                       (pow((puntos[i].y - centros[j].y), 2)));
+        row[j] = d;
       }
-      groups[indexOf(minimum(row, k), row, k)].push_back(
+      double minDistance = minimum(row, k);
+      //printf ("min = %f\n", minDistance);
+      double sse = pow(minDistance, 2);
+      groups[indexOf(minDistance, row, k)].push_back(
           puntos[i]); // add puntos position groups
+      newDistance += minDistance;
+      sse_aux += sse;
+      //printf ("min 2 = %f\n", sse);
     }
+    printf ("SSE = %f\n", sse_aux);
+    double s1;
+    s1 = sqrt((pow((centros[1].x - centros[0].x), 2)) +
+                  (pow((centros[1].y - centros[0].y), 2)));
+    printf ("BCV = %f\n", s1);
+    flags = s1 / sse_aux;
+    printf ("SSE/BCV = %f\n", flags);
+    error = abs(error -flags);
+    printf ("Error = %f\n\n", error);
+    sse =0;
+    sse_aux =0;
+    s1=0;
+
 
     for (int j = 0; j < k; j++) // update centros
     {
@@ -126,13 +172,17 @@ int main(int argc, char **argv) {
       }
     }
 
-    if (!isEqual(cviejos, centros, k)) {
+    if (flags < delta) {
       for (int i = 0; i < k; i++)
         groups[i].clear();
     }
-    iter++;
 
-  } while (!isEqual(cviejos, centros, k));
+    iter++;
+    cout << "Iteration "<<iter<< endl;
+
+  } while (flags < delta);
+  //while (abs(oldDistance - newDistance) < delta);
+  // while (!isEqual(cviejos, centros, k));
   /*____________________________________________________________________________*/
   cout << "\n";
   for (int i = 0; i < k; i++) {
@@ -144,6 +194,6 @@ int main(int argc, char **argv) {
     show(groups[i]);
   }
   cout << "\n";
-  cout << "\nNumero de Iteraciones " << iter << endl;
+  //cout << "\nNumero de Iteraciones " << iter << endl;
   return 0;
 }
